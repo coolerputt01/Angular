@@ -1,0 +1,94 @@
+/*Angular Sense CSS*/
+:root{
+  --blue:#2E3BBB;
+  --white:#fff;
+  --black:#000;
+  --grey :grey;
+}
+*{
+  margin:0;
+  padding:0;
+  box-sizing:border-box;
+  font-family:'DM Sans',sans-serif;
+}
+body,html{
+  display:flex;
+  justify-content: center;
+  align-items: center;
+  width:100%;
+  height:100vh;
+  animation:color-fade 2s ease-in-out infinite;
+}
+.fa-code{
+  color:var(--blue);
+  animation:rotate-anim 2s ease-in-out infinite ;
+}
+.loading{
+  display:flex;
+  justify-content:center;
+  align-items: center;
+  font-size:1.5em;
+  animation:zoom-anim 2s ease-out infinite;
+  color:var(--black);
+}
+.loading-text{
+  animation:text-fade 2s linear infinite;
+}
+@keyframes text-fade{
+  0%{
+    color:var(--black);
+  }
+  50%{
+    color:var(--grey);
+  }
+  100%{
+    color:var(--black);
+  }
+}
+@keyframes color-fade{
+  0%{
+    background:var(--white);
+  }
+  50%{
+    background:var(--blue);
+  }
+  100%{
+    background:var(--white);
+  }
+}
+@keyframes rotate-anim{
+  0%{
+    transform: rotate(0deg);
+    color:var(--blue);
+    scale:1;
+  }
+  50%{
+    transform: rotate(120deg);
+    color:var(--white);
+    scale:1.2;
+  }
+  100%{
+    transform: rotate(0deg);
+    color:var(--blue);
+    scale:1;
+  }
+}
+@keyframes zoom-anim{
+  0%{
+    transform: translateY(0%);
+  }
+  50%{
+    transform: translateY(50%);
+  }
+  100%{
+    transform: translateY(0%);
+  }
+}
+@media screen and (min-width:768px) {
+  .loading-text{
+    font-size:2.5em;
+  }
+  .fa-code{
+    font-size:2.5em;
+  }
+}

@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.1/css/all.min.css" integrity="sha512-5Hs3dF2AEPkpNAR7UiOHba+lRSJNeM2ECkwxUIxC1Q/FLycGTbNapWXB4tP889k5T5Ju8fs4b1P5z/iB4nMfSQ==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,100..1000;1,9..40,100..1000&display=swap" rel="stylesheet">
+  <title>Angular Sense</title>
+  <link href="https://cdn.jsdelivr.net/npm/prismjs@1.28.0/themes/prism.css" rel="stylesheet"/>
+  <link rel="stylesheet" href="./styles/home.css">
+</head>
+
+<body>
+<section class="chat-section">
+  <h2 class="choose-title">Choose How to Get Started</h2>
+  <ul class="chat-list">
+    <li class="link text">
+      <div class="link-box"></div>
+      Enter a Text Prompt
+    </li>
+    <li class="link image">
+      <div class="link-box"></div>
+      Upload an Image
+    </li>
+    <li class="link files">
+      <div class="link-box"></div>
+      Upload Code Files
+    </li>
+  </ul>
+</section>
+  <div class="bottom-nav-bar">
+    <div class="icon-container">
+    <img src="./assets/ai.svg" alt="Ai icon" class ="icon icn">
+    <p class="icon-text">AI</p>
+    </div>
+    <div class="icon-container" >
+      <i class="fa-regular fa-folder icn"></i>
+      <p class="icon-text">Storage</p>
+    </div>
+    <div class="icon-container">
+      <i class="fa-regular fa-user icn"></i>
+      <p class="icon-text">User</p>
+    </div>
+  </div>
+  <!-- Prism.js JS for syntax highlighting -->
+  <script src="https://cdn.jsdelivr.net/npm/prismjs@1.28.0/prism.js"></script>
+  <!-- Prism.js JavaScript language component -->
+  <script src="https://cdn.jsdelivr.net/npm/prismjs@1.28.0/components/prism-javascript.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"> </script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+  <script src="./scripts/ai.js" type="module"></script>
+</body>
+
+</html>

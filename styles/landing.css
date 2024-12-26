@@ -1,0 +1,168 @@
+/*Angular Sense CSS*/
+*{
+  margin:0;
+  padding:0;
+  box-sizing:border-box;
+  font-family:'DM Sans',sans-serif;
+}
+/*Nav bar*/
+.nav-bar{
+  width:100vw;
+  height:10vh;
+  background-color: transparent;
+  z-index: 10;
+  display:flex;
+  justify-content: space-between;
+  gap:11%;
+  backdrop-filter: blur(10px);
+  align-items: center;
+  position:fixed;
+  top:0;
+}
+/*Brand*/
+.brand{
+  display:flex;
+  justify-content: center;
+  align-items: center;
+  gap:3%;
+  width:100%;
+  height:100%;
+}
+.angular-sense{
+  font-size:1.6em;
+}
+.fa-code{
+  color:#2E3BBB;
+  font-size:1.3em;
+}
+.engage-btn{
+  width:45vw;
+  height:5.5vh;
+  display:flex;
+  margin:1%;
+  justify-content: center;
+  align-items: center;
+  border:none;
+  outline:none;
+  background-color:#2E3BBB;
+  color:#fff;
+  border-radius: 28px;
+}
+.hero{
+  display:flex;
+  justify-content: center;
+  align-items: center;
+  margin-top:30%;
+  flex-direction: column;
+  gap:5%;
+}
+.charge{
+  font-size: 1.7em;
+  width:100%;
+  padding:15px;
+  position: relative;
+}
+.emoji{
+  position: absolute;
+  animation: oscillation 0.8s linear infinite;
+}
+.sub-charge{
+  font-size: 1em;
+  width:90%;
+  padding:15px;
+  color:#333333;
+  line-height: 30px;
+}
+.rocket-icon{
+  width:2.5em;
+  padding:3%;
+}
+.engage-btn:hover{
+  background: linear-gradient(70deg,#1E2A47,#1E2A47,#2E3BBB, transparent);
+}
+.button-container{
+  width:100%;
+  display:flex;
+  justify-content: flex-start;
+  align-items: center;
+  padding:8px;
+}
+.angular-showcase{
+  width:100%;
+  height:100%;
+  background: linear-gradient(13deg,#2E3BBB, transparent,#2E3BBB,#2E3BBB);
+  backdrop-filter: blur(10px);
+  color:#fff;
+  display:flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  margin-top:40%;
+  clip-path: polygon(0% 10%, 100% 0%,100% 100%, 0% 100%);
+}
+.showcase-image{
+  width:72vw;
+  border-radius: 3.2px;
+  height:34vh;
+  object-fit: cover;
+}
+.showcase-text{
+  width:72vw;
+  text-align: center;
+  font-size: 0.9em;
+  padding:18px;
+  line-height: 25px;
+}
+.card{
+  margin-top:100px;
+  display:flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  -webkit-box-shadow: 5px 5px 30px -12px rgba(0,0,0,0.31); 
+  box-shadow: 5px 5px 30px -12px rgba(0,0,0,0.31);
+  border-radius:5px;
+  background: #2E3BBB;
+  padding:3%;
+}
+.first-card{
+  margin-top:150px;
+}
+@keyframes oscillation{
+  0%{
+    transform: translateY(0%);
+  }
+  50%{
+    transform: translateY(20%);
+  }
+  100%{
+    transform: translateY(0%);
+  }
+}
+/*Responsiveness*/
+@media screen and (min-width:768px){
+  .engage-btn{
+    width:30vw;
+    height:3vh;
+    font-size: 1.3em;
+    margin-left:12%;
+  }
+  .brand{
+    width:50%;
+  }
+  .nav-bar{
+    width:100vw;
+    gap:30%;
+  }
+  .showcase-text{
+    font-size: 1.5em;
+  }
+  .angular-showcase{
+   margin-top:12%;
+  }
+  .showcase-image{
+    width:62vw;
+    border-radius: 28px;
+    height:32vh;
+  }
+}

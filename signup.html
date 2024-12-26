@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Angular Sense</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.1/css/all.min.css" integrity="sha512-5Hs3dF2AEPkpNAR7UiOHba+lRSJNeM2ECkwxUIxC1Q/FLycGTbNapWXB4tP889k5T5Ju8fs4b1P5z/iB4nMfSQ==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,100..1000;1,9..40,100..1000&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="./styles/auth.css">
+</head>
+
+<body>
+<!--Auth Form-->
+<div class="message-box">
+  <p class="message-text">Verification email sent. Please check your inbox.</p>
+</div>
+<div class="form">
+    <p class="title">Register </p>
+    <p class="message">Sign up now to access all features for free.</p>
+        <div class="flex">
+        <label>
+            <input required="" placeholder="" type="text" class="input" id="firstName">
+            <span>Firstname</span>
+        </label>
+
+        <label>
+            <input required="" placeholder="" type="text" class="input" id="secondName">
+            <span>Lastname</span>
+        </label>
+    </div>  
+            
+    <label>
+        <input required="" placeholder="" type="email" class="input" id="email">
+        <span>Email</span>
+    </label> 
+        
+    <label>
+        <input required="" placeholder="" type="password" class="input" id="password">
+        <span>Password</span>
+    </label>
+    <label>
+        <input required="" placeholder="" type="password" class="input" id="confirmPassword">
+        <span>Confirm password</span>
+    </label>
+    <p class="warning-text">Please fill the form correctly.</p>
+    <button class="submit">Submit</button>
+    <p class="signin">Already have an account ? <a href="login.html">Signin</a> </p>
+</div>
+<script src="./scripts/signup.js" type="module"></script>
+</body>
+
+</html>
