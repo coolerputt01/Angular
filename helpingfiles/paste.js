@@ -1,14 +1,108 @@
+const getResponse = async (userInputText, chatTexts) => {
+  const userMessage = document.createElement('div');
+  userMessage.classList.add('user-chat-box');
+  userMessage.textContent = userInputText;
+  chatTexts.appendChild(userMessage);
+
+  const aiMessage = document.createElement('div');
+  aiMessage.classList.add('ai-chat-box');
+  const loader = document.createElement('div');
+  loader.classList.add('loader');
+  aiMessage.appendChild(loader);
+  const aiTools = document.createElement('div');
+  aiTools.classList.add('ai-tools');
+  aiTools.innerHTML = `
+    <i class="copy fa-regular fa-copy"></i> 
+    <i class="fa-solid fa-download"></i> 
+    <i class="fa-solid fa-chart-pie"></i>`;
+  chatTexts.appendChild(aiMessage);
+  chatTexts.append(aiTools);
+  scrollToBottom(chatTexts);
+
+  try {
+    const result = await chat.sendMessageStream(userInputText);
+    loader.remove();
+
+    let fullResponse = '';
+    for await (const chunk of result.stream) {
+      fullResponse += chunk.text();
+    }
+
+    const sanitizedResponse = sanitizeResponse(fullResponse);
+    const codeBlockMatch = sanitizedResponse.match(/```(.*?)```/s);
+
+    if (codeBlockMatch) {
+      const codeContent = codeBlockMatch[1].split('\n').slice(1).join('\n');
+      const code = document.createElement('code');
+      code.className = `language-javascript`;
+      code.textContent = codeContent;
+      aiMessage.appendChild(code);
+      Prism.highlightElement(code);
+
+      chatTexts.addEventListener('click', async function(event) {
+        if (event.target.classList.contains('copy')) {
+          try {
+            await navigator.clipboard.writeText(codeContent);
+            console.log("Copied to clipboard");
+          } catch (error) {
+            console.error("Failed to copy:", error);
+          }
+        } else if (event.target.classList.contains('fa-download')) {
+          const { jsPDF } = window.jspdf;
+          const pdf = new jsPDF();
+          pdf.text(codeContent, 10, 10);
+          pdf.save('ai-response.pdf');
+        }
+      });
+
+    } else {
+      const aiResponse = document.createElement('p');
+      aiResponse.textContent = sanitizedResponse;
+      aiMessage.appendChild(aiResponse);
+
+      chatTexts.addEventListener('click', async function(event) {
+        if (event.target.classList.contains('copy')) {
+          try {
+            await navigator.clipboard.writeText(aiResponse.textContent);
+            console.log("Copied");
+          } catch (error) {
+            console.error(error, error.message, error.status);
+          }
+        } else if (event.target.classList.contains('fa-download')) {
+          const { jsPDF } = window.jspdf;
+          const pdf = new jsPDF();
+          pdf.text(aiResponse.textContent, 10, 10);
+          pdf.save('ai-response.pdf');
+        }
+      });
+      scrollToBottom(chatTexts);
+    }
+  } catch (error) {
+    loader.remove();
+    aiMessage.textContent = "An error occurred. Please try again.";
+    console.error(error);
+  }
+};
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 "use strict";
 
 import { GoogleGenerativeAI } from "https://esm.run/@google/generative-ai";
-import jsPDF from "https://cdnjs.cloudflare.com/ajax/libs/mermaid/11.4.1/accessibility.d.ts";
-import mermaid from "https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.min.js";
-
-
-//Failed to resolve module specifier "@babel/runtime/helpers/typeof". Relative references must start with either "/", "./", or "../".
-
-
-
 const textLink = document.querySelector('.text');
 const loader = `
   <div class="loading">
@@ -37,15 +131,8 @@ const model = genAI.getGenerativeModel({
 const chat = model.startChat();
 
 const sanitizeResponse = (text) => {
+  // Remove Markdown-style formatting (e.g., asterisks)
   return text.replace(/\*/g, '').trim();
-};
-
-const createFlowchart = (code) => {
-  const flowchartDiv = document.createElement('div');
-  flowchartDiv.classList.add('flowchart');
-  flowchartDiv.innerHTML = `<div class="mermaid">${code}</div>`;
-  mermaid.init(undefined, flowchartDiv.querySelector('.mermaid'));
-  return flowchartDiv;
 };
 
 const getResponse = async (userInputText, chatTexts) => {
@@ -59,8 +146,13 @@ const getResponse = async (userInputText, chatTexts) => {
   const loader = document.createElement('div');
   loader.classList.add('loader');
   aiMessage.appendChild(loader);
+  const aiTools = document.createElement('div');
+  aiTools.classList.add('ai-tools');
+  aiTools.innerHTML = '<i class="copy fa-regular fa-copy"></i> <i class="fa-solid fa-download"></i> <i class="fa-solid fa-chart-pie"></i>'
+  //aiTools.classList.add('ai-tools');
   chatTexts.appendChild(aiMessage);
-
+  chatTexts.append(aiTools);
+  scrollToBottom(chatTexts);
   try {
     const result = await chat.sendMessageStream(userInputText);
     loader.remove();
@@ -71,77 +163,86 @@ const getResponse = async (userInputText, chatTexts) => {
     }
 
     const sanitizedResponse = sanitizeResponse(fullResponse);
-    const responseWrapper = document.createElement('div');
+    const codeBlockMatch = sanitizedResponse.match(/```(.*?)```/s);
 
-    const responseText = document.createElement('p');
-    responseText.textContent = sanitizedResponse;
-    responseWrapper.appendChild(responseText);
+    if (codeBlockMatch) {
+      const codeLanguage = codeBlockMatch[1].split('\n')[0];
+      const codeContent = codeBlockMatch[1].split('\n').slice(1).join('\n');
 
-    // Add Copy Button
-    const copyButton = document.createElement('button');
-    copyButton.textContent = 'Copy';
-    copyButton.onclick = () => {
-      navigator.clipboard.writeText(sanitizedResponse).then(() => {
-        alert('Response copied to clipboard!');
-      });
-    };
-    responseWrapper.appendChild(copyButton);
+      const code = document.createElement('code');
+      code.className = `language-javascript`;
+      code.textContent = codeContent;
+      aiMessage.appendChild(code);
+      Prism.highlightElement(code);
+      userMessage.style.setProperty('--opacity','0');
+      // Attach the event listener to the parent container for dynamic content
+chatTexts.addEventListener('click', async function(event) {
+  if (event.target.classList.contains('copy')) {
+    const codeBlock = aiMessage.querySelector('code');
+    const textToCopy = codeBlock ? codeBlock.textContent : sanitizedResponse;
 
-    // Add Download Button
-    const downloadButton = document.createElement('button');
-    downloadButton.textContent = 'Download as PDF';
-    downloadButton.onclick = () => {
-      const pdf = new jsPDF();
-      pdf.text(sanitizedResponse, 10, 10);
-      pdf.save('response.pdf');
-    };
-    responseWrapper.appendChild(downloadButton);
-
-    // Generate Flowchart if Applicable
-    if (sanitizedResponse.includes('graph')) {
-      const flowchart = createFlowchart(sanitizedResponse);
-      responseWrapper.appendChild(flowchart);
+    try {
+      await navigator.clipboard.writeText(textToCopy);
+      console.log("Copied to clipboard");
+    } catch (error) {
+      console.error("Failed to copy:", error);
     }
-
-    aiMessage.appendChild(responseWrapper);
-    scrollToBottom(chatTexts);
+  }
+});
+    } else {
+      const aiResponse = document.createElement('p');
+      aiResponse.textContent = sanitizedResponse;
+      document.querySelector('.copy').addEventListener('click',async function(){
+        try{
+          await navigator.clipboard.writeText(aiResponse.textContent);
+          console.log("copied");
+        }catch(error){
+          console.error(error,error.message,error.status);
+        }
+      });
+      aiMessage.appendChild(aiResponse);
+      
+      scrollToBottom(chatTexts);
+      userMessage.style.setProperty('--opacity','0');
+    }
   } catch (error) {
     loader.remove();
     aiMessage.textContent = "An error occurred. Please try again.";
-    console.error(error);
+    console.error(error,error.message,error.status);
   }
 };
 
 textLink.addEventListener('click', function() {
+  // Show the loader first
   mainSection.innerHTML = loader;
 
+  // After a short delay, replace the loader with the chat area
   setTimeout(() => {
     mainSection.innerHTML = chatArea;
-    mainSection.classList.add('chatting');
+    mainSection.classList.add('chatting'); // Add chatting class
 
+    // Attach event listener after the chat area is added to the DOM
     const sendButton = document.querySelector('.send-user-input');
     const userInput = document.querySelector('.input');
     const chatTexts = document.querySelector('.chat-texts');
-
+    
     sendButton.addEventListener('click', () => {
       const userInputText = userInput.value.trim();
       if (userInputText !== '') {
         getResponse(userInputText, chatTexts);
-        userInput.value = '';
+        userInput.value = ''; // Clear the input
       }
     });
-  }, 3000);
+  }, 3000); // 3000 milliseconds (3 seconds)
 
   textLink.classList.add('underline');
 });
-console.log('wrks')
-/*async function copyReferral() {
-      const referralLink = document.location.href;
-      const message = `Join for free! Earn ₦500 for each person you refer. Sign up here: ${referralLink}`;
-      try {
-        await navigator.clipboard.writeText(message);
-        referralLinkClicked = true; // Set flag when link is clicked
-      } catch (error) {
-        console.error("Error copying referral link:", error);
-      }
-    }*/
+const icons = document.querySelectorAll('.icn');
+icons.forEach((icon) => {
+  icon.addEventListener('click',()=>{
+    icons.forEach((icn) => {
+      icn.classList.remove('ico');
+    });
+    icon.classList.add('ico');
+  });
+});

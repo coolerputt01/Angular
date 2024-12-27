@@ -46,11 +46,14 @@ const getResponse = async (userInputText, chatTexts) => {
   aiMessage.appendChild(loader);
   const aiTools = document.createElement('div');
   aiTools.classList.add('ai-tools');
-  aiTools.innerHTML = '<i class="copy fa-regular fa-copy"></i> <i class="fa-solid fa-download"></i> <i class="fa-solid fa-chart-pie"></i>'
-  //aiTools.classList.add('ai-tools');
+  aiTools.innerHTML = `
+    <i class="copy fa-regular fa-copy"></i> 
+    <i class="fa-solid fa-download"></i> 
+    <i class="fa-solid fa-chart-pie"></i>`;
   chatTexts.appendChild(aiMessage);
   chatTexts.append(aiTools);
   scrollToBottom(chatTexts);
+
   try {
     const result = await chat.sendMessageStream(userInputText);
     loader.remove();
@@ -64,49 +67,94 @@ const getResponse = async (userInputText, chatTexts) => {
     const codeBlockMatch = sanitizedResponse.match(/```(.*?)```/s);
 
     if (codeBlockMatch) {
-      const codeLanguage = codeBlockMatch[1].split('\n')[0];
       const codeContent = codeBlockMatch[1].split('\n').slice(1).join('\n');
-
       const code = document.createElement('code');
       code.className = `language-javascript`;
       code.textContent = codeContent;
       aiMessage.appendChild(code);
       Prism.highlightElement(code);
-      userMessage.style.setProperty('--opacity','0');
-      // Attach the event listener to the parent container for dynamic content
-chatTexts.addEventListener('click', async function(event) {
-  if (event.target.classList.contains('copy')) {
-    const codeBlock = aiMessage.querySelector('code');
-    const textToCopy = codeBlock ? codeBlock.textContent : sanitizedResponse;
 
+      chatTexts.addEventListener('click', async function(event) {
+  const aiMessage = event.target.closest('.ai-chat-box'); // Find the nearest .ai-chat-box
+
+  if (!aiMessage) return; // Ensure the event target is within an ai-chat-box
+
+  // Copy text to clipboard
+  if (event.target.classList.contains('copy')) {
     try {
-      await navigator.clipboard.writeText(textToCopy);
+      const textContent = aiMessage.innerText.trim(); // Get the full text of the AI message
+      await navigator.clipboard.writeText(textContent);
       console.log("Copied to clipboard");
     } catch (error) {
       console.error("Failed to copy:", error);
     }
   }
-});
+
+  // Download as PDF
+  else if (event.target.classList.contains('fa-download')) {
+    try {
+      const textContent = aiMessage.innerText.trim();
+      if (textContent) {
+        const { jsPDF } = window.jspdf;
+        const pdf = new jsPDF();
+        pdf.text(textContent, 10, 10);
+        pdf.save('ai-response.pdf');
+      } else {
+        console.error("Unable to get text content for PDF.");
+      }
+    } catch (error) {
+      console.error("Error generating PDF:", error);
+    }
+  }
+
+  // Generate chart or flowchart
+  else if (event.target.classList.contains('fa-chart-pie')) {
+    const chartContainer = document.createElement('div');
+    chartContainer.style.width = '600px';
+    chartContainer.style.height = '400px';
+    chartContainer.classList.add('chart-container');
+    aiMessage.appendChild(chartContainer); // Append the chart container to the AI message
+
+    const responseText = aiMessage.innerText.trim();
+    const isFlowchart = responseText.startsWith('flowchart'); // Check if response is a flowchart (Mermaid.js syntax).
+
+    if (isFlowchart) {
+      // Render Mermaid flowchart
+      mermaid.initialize({ startOnLoad: false });
+      chartContainer.innerHTML = `<div class="mermaid">${responseText}</div>`;
+      mermaid.init(undefined, chartContainer.querySelector('.mermaid'));
     } else {
-      const aiResponse = document.createElement('p');
-      aiResponse.textContent = sanitizedResponse;
-      document.querySelector('.copy').addEventListener('click',async function(){
-        try{
-          await navigator.clipboard.writeText(aiResponse.textContent);
-          console.log("copied");
-        }catch(error){
-          console.error(error,error.message,error.status);
+      // Render graph with Chart.js
+      const ctx = document.createElement('canvas');
+      chartContainer.appendChild(ctx);
+
+      // Example: Bar chart data
+      const chartData = {
+        labels: ['Label1', 'Label2', 'Label3'],
+        datasets: [{
+          label: 'Example Dataset',
+          data: [10, 20, 30],
+          backgroundColor: ['#FF6384', '#36A2EB', '#FFCE56'],
+        }]
+      };
+
+      new Chart(ctx, {
+        type: 'bar', // 'bar', 'line', 'pie', etc.
+        data: chartData,
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
         }
       });
-      aiMessage.appendChild(aiResponse);
-      
+    }
+  }
+});
       scrollToBottom(chatTexts);
-      userMessage.style.setProperty('--opacity','0');
     }
   } catch (error) {
     loader.remove();
     aiMessage.textContent = "An error occurred. Please try again.";
-    console.error(error,error.message,error.status);
+    console.error(error);
   }
 };
 
